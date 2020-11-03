@@ -19,36 +19,6 @@ def rating_from_class(rating_class):
     if number == 7:
         return "Not Ratable"    
     return None
-   
-
-def parse_table(table, header_class, value_class):    
-    """Parses a TR / TD table from MS 
-    TODO: move to the helpers
-
-    Args:
-        table (soup table): Soup table loaded from MS
-        header_class(str): the name of the css class that identifies header columns
-        value_class(str): the name of the css class that identifies value columns
-
-    Returns:
-        [dictionary]: dictionary with the values of the table
-    """
-
-    values = {}    
-    for row in table.find_all('tr'):
-        columns = row.find_all('td')
-        name = ''
-        value = ''
-        for column in columns:            
-            # if not 'line' in column.attrs['class']:
-            #     continue
-            if header_class in column.attrs['class']:
-                name = column.get_text()
-            elif value_class in column.attrs['class']:
-                value = column.get_text()
-        if name != '' and value != '':
-            values[name] = value
-    return values
 
 def parse_general(soup_page, fund):
     """ Parse the general page from ms
@@ -80,7 +50,6 @@ def parse_general(soup_page, fund):
     fund.Sustainability  = sust
    
     
-
 def parse_rating_risk(soup_page, fund):
     """ Parse the rating risk page from ms
 
@@ -95,14 +64,33 @@ def parse_rating_risk(soup_page, fund):
     fund.sharpe = read_float_with_comma(right['Ratio de Sharpe'])    
 
 
+def get_page_from_url(url, tab = None):
+    url_to_retrieve = url
+    if tab != None:
+        url_to_retrieve += "$tab=" + str(tab)
+    
+    page = requests.get(url_to_retrieve)
+    soup = BeautifulSoup(page.content, "html.parser")
 
 
-#TODO: Test code to be removed when the proper calls are implemented
-# isin = 'F00000UDVS'
-# general = BeautifulSoup(open(f'test_pages/{isin}_general2.html'), "html.parser")
-# rating_riks = BeautifulSoup(open(f'test_pages/{isin}_rating_risk.html'), "html.parser")
-# fund = MSFund(isin)
-# #print(soup.prettify)
-# parse_general(general, fund)
-# parse_rating_risk(rating_riks, fund)
-# print(fund)
+def parse_fund(id_fund):
+    """Parses a fund given an morningstar id
+
+    Args:
+        id_fund (str): The morning star fund id to be parsed 
+    
+    Returns:
+        MSFund: a MSFund instance with all the data filled
+    """    
+    #id_fund = "F0GBR04BG3"
+    url = f"https://www.morningstar.es/es/funds/snapshot/snapshot.aspx?id={id_fund}"
+    fund = MSFund()
+    fund.MSID = id_fund
+    
+    parse_general(get_page_from_url(url), fund)    
+    parse_rating_risk(get_page_from_url(url, 2), fund)
+    
+    return fund
+
+parse_fund("F0GBR04BG3")
+

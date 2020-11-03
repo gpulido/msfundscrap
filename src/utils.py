@@ -35,3 +35,33 @@ def number_from_class(number_class):
         int: the number representation of the class.
     """
     return int(number_class[-1])
+
+
+def parse_table(table, header_class, value_class):    
+    """Parses a TR / TD table from MS 
+    TODO: move to the utils
+
+    Args:
+        table (soup table): Soup table loaded from MS
+        header_class(str): the name of the css class that identifies header columns
+        value_class(str): the name of the css class that identifies value columns
+
+    Returns:
+        [dictionary]: dictionary with the values of the table
+    """
+    values = {}    
+    for row in table.find_all('tr'):
+        columns = row.find_all('td')
+        name = ''
+        value = ''
+        for column in columns:            
+            # if not 'line' in column.attrs['class']:
+            #     continue
+            if header_class in column.attrs['class']:
+                name = column.get_text()
+            elif value_class in column.attrs['class']:
+                value = column.get_text()
+        if name != '' and value != '':
+            values[name] = value
+    return values
+

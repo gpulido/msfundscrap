@@ -115,6 +115,24 @@ class YieldPercent(Enum):
              return ":GT:8"
         return str(self.value)
     
+def rating_from_class(rating_class):
+    number = int(rating_class[-1])
+    if number == 1:
+        return "Negative"
+    if number == 2:
+        return "Neutral"
+    if number == 3:
+        return "Bronze"
+    if number == 4:
+        return "Silver"
+    if number == 5:
+        return "Gold"
+    if number == 6:
+        return "Under Review"
+    if number == 7:
+        return "Not Ratable"    
+    return None
+
 
 @dataclass
 class MSFundFilter:
@@ -158,30 +176,7 @@ class MSFundFilter:
         rep = [self.to_id_string(key, val) for key, val in m_dict.items() if val!= None]
         rep2 = [v for v in rep if v != ""]
         return "{" + ','.join(rep2) + "}"
-    
-    def to_api_filter_json(self):
-
-
-
-
-def rating_from_class(rating_class):
-    number = int(rating_class[-1])
-    if number == 1:
-        return "Negative"
-    if number == 2:
-        return "Neutral"
-    if number == 3:
-        return "Bronze"
-    if number == 4:
-        return "Silver"
-    if number == 5:
-        return "Gold"
-    if number == 6:
-        return "Under Review"
-    if number == 7:
-        return "Not Ratable"    
-    return None
-
+        
 
 @dataclass
 class MSFund:
@@ -189,7 +184,8 @@ class MSFund:
     The use of a class allows to better abstraction and allows to 
     define several output formats
     """
-    ISIN: str # check format
+    MSID: str = None #the id for morning star
+    ISIN: str = None # check format
     name: str = None
     stars: int = 1 # change to range from 1-5
     vl: float = 0.0
