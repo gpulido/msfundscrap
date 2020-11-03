@@ -1,26 +1,6 @@
 from bs4 import BeautifulSoup
-from dataclasses import dataclass
-#import locale
-
-
-def sanitize_text(text):
-    return text.replace('\n', '').strip()
-
-def read_float_with_comma(num):
-    return float(num.replace(",", "."))
-    #return locale.atof(num)
-    
-def number_from_class(number_class):
-    """Helper method to return the last char as integer from a numbered
-    class. example: stars1 stars2 stars3
-
-    Args:
-        number_class (str): class name that has a number at the end
-
-    Returns:
-        int: the number representation of the class.
-    """
-    return int(number_class[-1])
+from .model import MSFund
+from .utils import *
 
 def rating_from_class(rating_class):
     number = int(rating_class[-1])
@@ -39,27 +19,7 @@ def rating_from_class(rating_class):
     if number == 7:
         return "Not Ratable"    
     return None
-
-
-
-
-@dataclass
-class MSFund:
-    """Class to keep information of funds.
-    The use of a class allows to better abstraction and allows to 
-    define several output formats
-    """
-
-    ISIN: str # check format
-    name: str = None
-    stars: int = 1 # change to range from 1-5
-    vl: float = 0.0
-    category: str  = None #to be reviewed
-    common_expenses: int = 0
-    Sustainability: int = 1#change to range from 1-5
-    sharpe: float = 0.0
-    rating: str = None
-    
+   
 
 def parse_table(table, header_class, value_class):    
     """Parses a TR / TD table from MS 
@@ -122,7 +82,7 @@ def parse_general(soup_page, fund):
     
 
 def parse_rating_risk(soup_page, fund):
-    """ Parse the general page from ms
+    """ Parse the rating risk page from ms
 
     Args:
         soup_page (soup page): Soup variable with the rating risk page loaded
@@ -138,11 +98,11 @@ def parse_rating_risk(soup_page, fund):
 
 
 #TODO: Test code to be removed when the proper calls are implemented
-isin = 'F00000UDVS'
-general = BeautifulSoup(open(f'test_pages/{isin}_general2.html'), "html.parser")
-rating_riks = BeautifulSoup(open(f'test_pages/{isin}_rating_risk.html'), "html.parser")
-fund = MSFund(isin)
-#print(soup.prettify)
-parse_general(general, fund)
-parse_rating_risk(rating_riks, fund)
-print(fund)
+# isin = 'F00000UDVS'
+# general = BeautifulSoup(open(f'test_pages/{isin}_general2.html'), "html.parser")
+# rating_riks = BeautifulSoup(open(f'test_pages/{isin}_rating_risk.html'), "html.parser")
+# fund = MSFund(isin)
+# #print(soup.prettify)
+# parse_general(general, fund)
+# parse_rating_risk(rating_riks, fund)
+# print(fund)
