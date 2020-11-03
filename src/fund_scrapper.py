@@ -71,6 +71,7 @@ def get_page_from_url(url, tab = None):
     
     page = requests.get(url_to_retrieve)
     soup = BeautifulSoup(page.content, "html.parser")
+    return soup
 
 
 def parse_fund(id_fund):

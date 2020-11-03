@@ -1,9 +1,7 @@
 from urllib.request import urlretrieve
 from urllib.parse import urlencode
-from model import *
-from selenium_scrapper import *
-
-
+from .model import *
+from .selenium_scrapper import *
 
 
 def generate_search_url(filtersSelectedValue):
