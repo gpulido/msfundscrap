@@ -26,7 +26,12 @@ def parse_general(soup_page, fund):
         rating = rating_span[1].attrs['class'][1]
         fund.rating = rating_from_class(rating)
 
-    #search for quickstats
+    #search for keystats
+    keystats = soup_page.findAll("div", {"id": "overviewQuickstatsDiv"})[0].find('table')
+    keystats_values = parse_table(keystats, "heading", "text") 
+    #TODO: parse keystats values into fund
+    fund.ISIN = keystats['ISIN']
+
     quickstats = soup_page.findAll("div", {"id": "overviewQuickstatsBenchmarkDiv"})[0].find('table')
     values = parse_table(quickstats, "heading", "text")    
     #TODO: parse quickstats values into fund   
@@ -94,5 +99,12 @@ def parse_fund(id_fund):
 
 
 if __name__ == '__main__':
-    parse_fund("F0GBR04BG3")
+    with open('test_pages/0P000019YS_general.html', 'r') as f:
+        contents = f.read()
+    
+    soup = BeautifulSoup(contents, "html.parser")
+    fund = MSFund()
+    fund.MSID = '0P000019YS'
+    parse_general(soup, fund)
+    #parse_fund("F0GBR04BG3")
 
