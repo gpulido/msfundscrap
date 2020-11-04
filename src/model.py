@@ -1,5 +1,6 @@
 from dataclasses import dataclass, asdict
 from enum import Enum
+from collections import OrderedDict
 
 
 class Ratings(Enum):
@@ -208,7 +209,7 @@ class MSFund:
     """Class to keep information of funds.
     The use of a class allows to better abstraction and allows to 
     define several output formats
-    """
+    """    
     MSID: str = None #the id for morning star
     ISIN: str = None # check format
     name: str = None
@@ -221,7 +222,23 @@ class MSFund:
     rating: str = None
     
 
+    def get_properties_names(self):
+        """Returns the dataclass properties values as list 
+
+        Returns:
+            [type]: [description]
+        """
+        #use of an ordereddict to ensure that all instances provides same output        
+        rep = [key for key, val in  asdict(self,  dict_factory=OrderedDict).items()]
+        return rep    
+
     def get_properties(self):
-        rep = [val for key, val in asdict(self).items()]
+        """Returns the dataclass properties values as list 
+
+        Returns:
+            [type]: [description]
+        """
+        #use of an ordereddict to ensure that all instances provides same output        
+        rep = [val for key, val in  asdict(self,  dict_factory=OrderedDict).items()]
         return rep    
     

@@ -26,8 +26,6 @@ def generate_search_url(filtersSelectedValue):
 def get_fund_list(url):
     page = get_page_selenium(url, (By.ID, "ec-screener-results-view-container-group-section-panel-all"))
 
-    # with open(f"test_pages/search_fund_selenium2.html", "w") as f:        
-    #     print(page, file=f)
 
 
 def get_funds_list_api(fund_filter, page_number = 1, page_size = 100000):

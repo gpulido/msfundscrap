@@ -5,6 +5,14 @@ from fund_scrapper import *
 
 
 def configure_logger(logger_level):
+    """Configure the python logger to show messages
+
+    Args:
+        logger_level (str): Level of logging to be used (DEBUG, INFO)
+
+    Returns:
+        logger: the configured logger
+    """
     import logging
     numeric_level = getattr(logging, logger_level, None)
     logging.basicConfig(format= '%(asctime)s %(levelname)s:%(message)s', level=numeric_level)
@@ -12,22 +20,40 @@ def configure_logger(logger_level):
 
 
 def get_funds(list_id, output):
-    print(list_id)
+    """Retrieve the current funds info for the provided list of ms ids and stores as csv into
+    the provided output file path.
+    NOTE: if there is a file with the 
+
+    Args:
+        list_id ([str]): List of ms funds to retrieve info from.
+        output (file path): A well formed file path
+    """    
     logger.info("Scraping funds")
-    #TODO: call the fund_scrapper with the id
-    funds = [ parse_fund(id) for id in list_id[0:1]]
+    
+    funds = [ parse_fund(id) for id in list_id]
+
+    #serialize to csv
     import csv
     with open(output, 'w', newline='') as csvfile:
         wr = csv.writer(csvfile, delimiter=',')
+        dummy_fund = MSFund()
+        wr.writerow(dummy_fund.get_properties_names())
         for fund in funds:
             wr.writerow(fund.get_properties())
     
 
 def filter(args):
+    """Use the provided filter args from the command line to generate the list of funds to
+    retrieve from ms
+
+    Args:
+        args (args): Command line args with filter information
+    """
     if args.input:
-        print("there is already an input, ignore")
+        logger.info("Found list of ids as input, ignore filter args")
         return
 
+    #create a ms fund filter with the args parameters
     newFilter = MSFundFilter()
     if args.star:
         newFilter.starRating = Levels(args.star)
