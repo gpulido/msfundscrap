@@ -217,16 +217,16 @@ class MSFund:
     vl: float = 0.0
     category: str  = None #to be reviewed
     common_expenses: int = 0
-    Sustainability: int = 1#change to range from 1-5
+    sustainability: int = 1#change to range from 1-5
     sharpe: float = 0.0
     rating: str = None
     
 
     def get_properties_names(self):
-        """Returns the dataclass properties values as list 
+        """Returns the dataclass properties names as list 
 
         Returns:
-            [type]: [description]
+            list[str]: List of the names of the properties
         """
         #use of an ordereddict to ensure that all instances provides same output        
         rep = [key for key, val in  asdict(self,  dict_factory=OrderedDict).items()]
@@ -236,7 +236,7 @@ class MSFund:
         """Returns the dataclass properties values as list 
 
         Returns:
-            [type]: [description]
+            list: list of the values of the properties
         """
         #use of an ordereddict to ensure that all instances provides same output        
         rep = [val for key, val in  asdict(self,  dict_factory=OrderedDict).items()]
