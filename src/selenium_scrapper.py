@@ -17,7 +17,7 @@ def get_sel_options():
     return options
 
 
-def get_page_selenium(url, wait_for_element = None):
+def get_page_selenium(url, locator = None):
     """Uses selenium to retrieve the html code of a given url
 
     Args:
@@ -33,9 +33,9 @@ def get_page_selenium(url, wait_for_element = None):
     #yield driver.page_source
     #TODO: review if we can use yield and reuse the driver passing a collection
     try:        
-        if wait_for_element:        
+        if locator:        
             element = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, wait_for_element))
+                EC.presence_of_element_located(locator)
             )
     finally:               
         html_source = driver.page_source                  

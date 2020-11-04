@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
-from .model import MSFund
-from .utils import *
+import requests
+from model import MSFund
+from utils import *
+from selenium_scrapper import *
+from selenium.webdriver.common.by import By
 
 def rating_from_class(rating_class):
     number = int(rating_class[-1])
@@ -64,13 +67,14 @@ def parse_rating_risk(soup_page, fund):
     fund.sharpe = read_float_with_comma(right['Ratio de Sharpe'])    
 
 
-def get_page_from_url(url, tab = None):
+def get_page_from_url(url, tab = None, wait_locator = None):
     url_to_retrieve = url
     if tab != None:
         url_to_retrieve += "$tab=" + str(tab)
     
-    page = requests.get(url_to_retrieve)
-    soup = BeautifulSoup(page.content, "html.parser")
+    page = get_page_selenium(url_to_retrieve, wait_locator)
+    #requests.get(url_to_retrieve)
+    soup = BeautifulSoup(page, "html.parser")
     return soup
 
 
@@ -82,16 +86,17 @@ def parse_fund(id_fund):
     
     Returns:
         MSFund: a MSFund instance with all the data filled
-    """    
-    #id_fund = "F0GBR04BG3"
+    """        
     url = f"https://www.morningstar.es/es/funds/snapshot/snapshot.aspx?id={id_fund}"
     fund = MSFund()
     fund.MSID = id_fund
     
-    parse_general(get_page_from_url(url), fund)    
-    parse_rating_risk(get_page_from_url(url, 2), fund)
+    parse_general(get_page_from_url(url, wait_locator = (By.ID, 'overviewQuickstatsBenchmarkDiv')), fund)    
+    #parse_rating_risk(get_page_from_url(url, 2,  wait_locator = (By.ID, 'ratingRiskLeftDiv')), fund)
     
     return fund
 
-parse_fund("F0GBR04BG3")
+
+if __name__ == '__main__':
+    parse_fund("F0GBR04BG3")
 

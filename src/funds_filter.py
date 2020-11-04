@@ -1,7 +1,8 @@
 from urllib.request import urlretrieve
 from urllib.parse import urlencode
-from .model import *
-from .selenium_scrapper import *
+from model import *
+from selenium_scrapper import *
+import requests
 
 
 def generate_search_url(filtersSelectedValue):
@@ -23,18 +24,45 @@ def generate_search_url(filtersSelectedValue):
 
 
 def get_fund_list(url):
-    page = get_page_selenium(url,  "ec-screener-results-view-container-group-section-panel-all")
+    page = get_page_selenium(url, (By.ID, "ec-screener-results-view-container-group-section-panel-all"))
 
-    with open(f"test_pages/search_fund_selenium2.html", "w") as f:        
-        print(page, file=f)
-
-
+    # with open(f"test_pages/search_fund_selenium2.html", "w") as f:        
+    #     print(page, file=f)
 
 
+def get_funds_list_api(fund_filter, page_number = 1, page_size = 100000):
+    
+    params = {
+              'page':page_number,
+              'pageSize':page_size,
+              'outputType':'json',              
+              'version':1,
+              'languageId':'es-ES',
+              'currencyId':'EUR',
+              'universeIds':'FOESP$$ALL',
+              'securityDataPoints':'SecId|Isin',
+              #'securityDataPoints':'SecId|SustainabilityRating|Isin'
+              #'filterDataPoints':'BrandingCompanyId|IMASectorId|CategoryId|AdministratorCompanyId|UmbrellaCompanyId|GlobalAssetClassId|GlobalCategoryId|ShareClassType|BaseCurrencyId|AnalystRatingScale'
+              #'filterDataPoints':'Id',  
+              #'filters':'starRatingM255:IN:4:5'
+    }
+    if fund_filter != None:
+        params['filters'] = fund_filter.to_api_filter()
+            #securityDataPoints=SecId%7CName%7CPriceCurrency%7CTenforeId%7CLegalName%7CClosePrice%7CYield_M12%7CCategoryName%7CAnalystRatingScale%7CStarRatingM255%7CQuantitativeRating%7CSustainabilityRank%7CReturnD1%7CReturnW1%7CReturnM1%7CReturnM3%7CReturnM6%7CReturnM0%7CReturnM12%7CReturnM36%7CReturnM60%7CReturnM120%7CFeeLevel%7CManagerTenure%7CMaxDeferredLoad%7CInitialPurchase%7CFundTNAV%7CEquityStyleBox%7CBondStyleBox%7CAverageMarketCapital%7CAverageCreditQualityCode%7CEffectiveDuration%7CMorningstarRiskM255%7CAlphaM36%7CBetaM36%7CR2M36%7CStandardDeviationM36%7CSharpeM36%7CTrackRecordExtension&filters=&term=&subUniverseId=     
+    url = "https://lt.morningstar.com/api/rest.svc/klr5zyak8x/security/screener"            
+    r = requests.get(url, params=params).json()    
+    num_funds = r['total']
+    funds_list = r['rows']
+    return num_funds, funds_list     
 
-test = MSFundFilter()
-test.starRating = 5
-url = generate_search_url(fund_filter)
-get_fund_list(url)
+
+if __name__ == '__main__':
+    test = MSFundFilter()
+    test.starRating = Levels.FOUR
+    test.sustainabilityRating = Levels.FOUR
+    test.quantitativeRating = QuaRatings.SILVER
+    print(test)
+    get_funds_resume(test, 1, 100000)
+
 
     

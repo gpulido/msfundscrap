@@ -1,48 +1,56 @@
-
 from dataclasses import dataclass, asdict
 from enum import Enum
 
 
 class Ratings(Enum):
-    NONE = 0,
-    ONE = 1,
-    TWO = 2,
-    THREE = 3,
-    FOUR = 4,
+    NONE = 0
+    ONE = 1
+    TWO = 2
+    THREE = 3
+    FOUR = 4
     FIVE = 5
     def __str__(self):
         return str(self.value)
     
+    def as_api(self):
+        return f'IN:{self.value}:5'
+    
 
 class QuaRatings(Enum):
-    NONE = 0,
-    NEGATIVE = 1,
-    NEUTRAL = 2,
-    BRONZE = 3,
-    SILVER = 4,
+    NONE = 0
+    NEGATIVE = 1
+    NEUTRAL = 2
+    BRONZE = 3
+    SILVER = 4
     GOLD = 5
     def __str__(self):
         return str(self.value)
+    
+    def as_api(self):
+        return f'IN:{self.value}:5'
 
 
 class Levels(Enum):
-    NONE = 0,
-    ONE = 1,
-    TWO = 2,
-    THREE = 3,
-    FOUR = 4,
+    NONE = 0
+    ONE = 1
+    TWO = 2
+    THREE = 3
+    FOUR = 4
     FIVE = 5
     def __str__(self):
         if self == Levels.NONE:
             return "NONE"
         return str(self.value)
+    
+    def as_api(self):
+        return f'IN:{self.value}:5'
 
 class Charge(Enum):
-    NONE = 0,
-    LT_05 = 1,
-    BTW_05_1 = 2,
-    BTW_1_15 = 3,
-    BTW_15_2 = 4,
+    NONE = 0
+    LT_05 = 1
+    BTW_05_1 = 2
+    BTW_1_15 = 3
+    BTW_15_2 = 4
     GT_2 = 5
     def __str__(self):
         if self == Charge.NONE:
@@ -60,9 +68,9 @@ class Charge(Enum):
         return str(self.value)
 
 class ManagementStyle(Enum):
-    NONE = 0,
-    ACTIVE = 0,
-    PASIVE = 1
+    NONE = 0
+    ACTIVE = 1
+    PASIVE = 2
     def __str__(self):
         if self == Charge.NONE:
              return "NONE"
@@ -71,11 +79,11 @@ class ManagementStyle(Enum):
         return "true"
 
 class FundSize(Enum):
-    NONE = 0,
-    LT_100m = 1,
-    BTW_100m_500m = 2,
-    BTW_500m_1b = 3,
-    BTW_1b_10b = 4,
+    NONE = 0
+    LT_100m = 1
+    BTW_100m_500m = 2
+    BTW_500m_1b = 3
+    BTW_1b_10b = 4
     GT_10b = 5
     def __str__(self):
         if self == Charge.NONE:
@@ -94,11 +102,11 @@ class FundSize(Enum):
 
 
 class YieldPercent(Enum):
-    NONE = 0,
-    BTW_0_2 = 1,
-    BTW_2_4 = 2,
-    BTW_4_6 = 3,
-    BTW_6_8 = 4,
+    NONE = 0
+    BTW_0_2 = 1
+    BTW_2_4 = 2
+    BTW_4_6 = 3
+    BTW_6_8 = 4
     GT_8 = 5
     def __str__(self):
         if self == YieldPercent.NONE:
@@ -136,9 +144,7 @@ def rating_from_class(rating_class):
 
 @dataclass
 class MSFundFilter:
-    """Class model the filterSelectedValue keep information of funds.
-    The use of a class allows to better abstraction and allows to 
-    define several output formats    
+    """Class model the filterSelectedValue 
     """    
     analystRatingScale: QuaRatings = QuaRatings.NONE
     brandingCompanyId: str = None
@@ -176,7 +182,26 @@ class MSFundFilter:
         rep = [self.to_id_string(key, val) for key, val in m_dict.items() if val!= None]
         rep2 = [v for v in rep if v != ""]
         return "{" + ','.join(rep2) + "}"
+    
+    def to_api_filter(self):
+        """Returns the filter as a string to be used on the ms api to filter
+        TODO: Not all options are yet used
+
+        Returns:
+            str: Filter string to be used in the api calls
+        """
+        rep = []
+        if self.starRating != Levels.NONE:
+            rep.append('StarRatingM255:' + self.starRating.as_api())
+            
+        if self.sustainabilityRating != Levels.NONE:
+            rep.append('SustainabilityRank:' + self.sustainabilityRating.as_api())
         
+        if self.quantitativeRating != QuaRatings.NONE:
+            rep.append('AnalystRatingScale;' + self.quantitativeRating.as_api())
+
+        return '|'.join(rep)
+
 
 @dataclass
 class MSFund:
@@ -194,3 +219,9 @@ class MSFund:
     Sustainability: int = 1#change to range from 1-5
     sharpe: float = 0.0
     rating: str = None
+    
+
+    def get_properties(self):
+        rep = [val for key, val in asdict(self).items()]
+        return rep    
+    
