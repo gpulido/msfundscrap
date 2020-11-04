@@ -86,7 +86,7 @@ def parse_fund(id_fund):
     fund.MSID = id_fund
     
     general_page = get_page_from_url(url, id_fund, wait_locator = (By.ID, 'overviewQuickstatsBenchmarkDiv'), save_to_file=True)
-    if  general_page != None:
+    if general_page != None:
         parse_general(general_page, fund)      
         parse_rating_risk(get_page_from_url(url, id_fund, 2,  wait_locator = (By.ID, 'ratingRiskRightDiv'), save_to_file=True), fund)
     

@@ -1,7 +1,7 @@
 from urllib.request import urlretrieve
 from urllib.parse import urlencode
 from model import *
-from selenium_scrapper import *
+from scrapper_motor import *
 import requests
 
 

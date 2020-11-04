@@ -62,7 +62,7 @@ def filter(args):
     if args.sustainability:
         newFilter.sustainabilityRating = Levels(args.sustainability)
     
-    num, funds = get_funds_list_api(newFilter,1, 10)
+    num, funds = get_funds_list_api(newFilter,1, args.max)
     funds_ids = [f['SecId'] for f in funds]
     logger.info(f"Num of funds to retrieve: {num}")
     logger.debug(funds_ids)
@@ -81,6 +81,7 @@ if __name__ == '__main__':
     parser_filter.add_argument("--rating", type=str, choices=["negative", "neutral", "bronze","silver", "gold"], help="min qualitative rating")
     parser_filter.add_argument("--sustainability", type=int, choices=range(1, 6), help="min sustainability rating")
     parser_filter.add_argument("--filterOutput", type=str, help="file where store the ids created by the filter")
+    parser_filter.add_argument("--max", type=int, default=10,  help="maximun funds to scrap from the filter output")
     parser_filter.set_defaults(func=filter)
 
     args = parser.parse_args()
