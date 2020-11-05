@@ -18,8 +18,7 @@ def parse_general(soup_page, fund):
     if soup_page == None:
         return
     title = soup_page.title.string.split('|')[0]
-    fund.name = sanitize_text(title)
-    #TODO: look for the ISIN
+    fund.name = sanitize_text(title)    
     
     rating_span = soup_page.findAll("span", {"class": "rating_sprite"})   
     #stars
@@ -33,8 +32,8 @@ def parse_general(soup_page, fund):
     #search for keystats
     keystats = soup_page.findAll("div", {"id": "overviewQuickstatsDiv"})[0].find('table')
     keystats_values = parse_table(keystats, "heading", "text") 
-    #TODO: parse keystats values into fund
-    fund.ISIN = keystats['ISIN']
+    #TODO: parse keystats values into fund    
+    fund.ISIN = keystats_values['ISIN']
 
     quickstats = soup_page.findAll("div", {"id": "overviewQuickstatsBenchmarkDiv"})[0].find('table')
     values = parse_table(quickstats, "heading", "text")    
@@ -96,7 +95,7 @@ def get_page_from_url(url, id_fund, tab = None, wait_locator = None, save_to_fil
     return soup
 
 
-def parse_fund(id_fund):
+def parse_fund(id_fund, save_to_file = False):
     """Parses a fund given an morningstar id
 
     Args:
@@ -104,17 +103,44 @@ def parse_fund(id_fund):
     
     Returns:
         MSFund: a MSFund instance with all the data filled
-    """        
+    """
+    logger.info(f'Scrapping fund: {id_fund}')        
     url = f'https://www.morningstar.es/es/funds/snapshot/snapshot.aspx?id={id_fund}'
     fund = MSFund()
     fund.MSID = id_fund
     
-    general_page = get_page_from_url(url, id_fund, wait_locator = (By.ID, 'overviewQuickstatsBenchmarkDiv'), save_to_file=True)
+    general_page = get_page_from_url(url, id_fund, wait_locator = (By.ID, 'overviewQuickstatsBenchmarkDiv'), save_to_file=save_to_file)
     if general_page != None:
         parse_general(general_page, fund)      
-        parse_rating_risk(get_page_from_url(url, id_fund, 2,  wait_locator = (By.ID, 'ratingRiskRightDiv'), save_to_file=True), fund)
+        parse_rating_risk(get_page_from_url(url, id_fund, 2,  wait_locator = (By.ID, 'ratingRiskRightDiv'), save_to_file=save_to_file), fund)
     
     return fund
+
+def get_funds(list_id, output, save_files):
+    """Retrieve the current funds info for the provided list of ms ids and stores as csv into
+    the provided output file path.
+    NOTE: if there is a file with the 
+
+    Args:
+        list_id ([str]): List of ms funds to retrieve info from.
+        output (file path): A well formed file path
+    """    
+    logger.info(f"Num of funds to retrieve: {len(list_id)}")
+    logger.debug(list_id)
+    logger.info("Scraping funds")
+    
+    #serialize to csv
+    import csv
+    with open(output, 'w', newline='') as csvfile:
+        try:
+            wr = csv.writer(csvfile, delimiter=',')
+            dummy_fund = MSFund()
+            wr.writerow(dummy_fund.get_properties_names())
+            for id in list_id:
+                fund = parse_fund(id, save_files)
+                wr.writerow(fund.get_properties())
+        except Exception:
+            logger.error("Error retrieving funds",  exc_info=True)
 
 
 if __name__ == '__main__':

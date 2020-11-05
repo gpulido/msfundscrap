@@ -29,7 +29,19 @@ def get_fund_list(url):
 
 
 def get_funds_list_api(fund_filter, page_number = 1, page_size = 100000):
-    
+    """Obtains the list of funds for the provided filter.
+    As the ms api answer is paginated two parameters are provided to retrieve them.
+    However if the page_size is big enough the answer contains all data.
+
+    Args:
+        fund_filter ([type]): [description]
+        page_number (int, optional): [description]. Defaults to 1.
+        page_size (int, optional): [description]. Defaults to 100000.
+
+    Returns:
+        int, list[dict()]: Returns two values. The number of elements and a list of json elements
+        that contains SecId and Isin data.
+    """
     params = {
               'page':page_number,
               'pageSize':page_size,
