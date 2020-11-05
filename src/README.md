@@ -2,12 +2,12 @@ This folder contains the python code to use the scrapper.
 
 ## contents
 
-- ms_scrapper.py - main entry point
-- fund_scraper.py - Retrieves the information of a given fund
-- model.py - Support classes to model funds and filters
-- funds_filter.py -  Code that manage filters so the funds usage can be narrowed down.
-- utils.py - Several helper functions
-- scrapper_motor.py - Helper functions to retrieve pages using selenium or requests
+- `ms_scrapper.py` - main entry point
+- `fund_scraper.py` - Retrieves the information of a given fund
+- `model.py` - Support classes to model funds and filters
+- `ms_filter.py` -  Code that manage filters to the ms ids api.
+- `utils.py` - Several helper functions
+- `scrapper_motor.py` - Helper functions to retrieve pages using selenium or requests
 
 
 ## Usage
@@ -18,20 +18,23 @@ python ms_scrapper.py -h
 ```
 
 ```
-usage: ms-scrapper-cli [-h] [--output OUTPUT] [--loglevel {INFO,DEBUG}] [--savefiles SAVEFILES] {list,filter} ...
+usage: ms-scrapper-cli [-h] [--output OUTPUT] [--universe {fund,etf}] [--savefiles SAVEFILES] [--loglevel {INFO,DEBUG}] {list,file,filter} ...
 
 positional arguments:
-  {list,filter}         Specify how to obtain the ids
+  {list,file,filter}    Specify how to obtain the ids
     list                Specify list of ids
+    file                file with a comma separated list of ids
     filter              Filter to use to obtain the funds
 
 optional arguments:
   -h, --help            show this help message and exit
   --output OUTPUT       output file to serialize to serialize the funds info
-  --loglevel {INFO,DEBUG}
-                        Logging level.
+  --universe {fund,etf}
+                        type of ms universe to retrieve
   --savefiles SAVEFILES
                         True if the html files should be stored
+  --loglevel {INFO,DEBUG}
+                        Logging level.
 ```
 
 ### Use list of MS Ids as input

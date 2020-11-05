@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from model import MSFund
+from model import MSFund, MSUniverses
 from utils import *
 from scrapper_motor import *
 from selenium.webdriver.common.by import By
@@ -20,14 +20,15 @@ def parse_general(soup_page, fund):
     title = soup_page.title.string.split('|')[0]
     fund.name = sanitize_text(title)    
     
-    rating_span = soup_page.findAll("span", {"class": "rating_sprite"})   
-    #stars
-    stars = rating_span[0].attrs['class'][1]
-    fund.stars =  number_from_class(stars)
-    #rating
-    if len(rating_span) > 1:
-        rating = rating_span[1].attrs['class'][1]
-        fund.rating = rating_from_class(rating)
+    rating_span = soup_page.findAll("span", {"class": "rating_sprite"})
+    if len(rating_span) > 0:
+        #stars
+        stars = rating_span[0].attrs['class'][1]
+        fund.stars =  number_from_class(stars)
+        #rating
+        if len(rating_span) > 1:
+            rating = rating_span[1].attrs['class'][1]
+            fund.rating = rating_from_class(rating)
 
     #search for keystats
     keystats = soup_page.findAll("div", {"id": "overviewQuickstatsDiv"})[0].find('table')
@@ -95,7 +96,7 @@ def get_page_from_url(url, id_fund, tab = None, wait_locator = None, save_to_fil
     return soup
 
 
-def parse_fund(id_fund, save_to_file = False):
+def parse_fund(id, universe = MSUniverses.FUND, save_to_file = False):
     """Parses a fund given an morningstar id
 
     Args:
@@ -103,27 +104,26 @@ def parse_fund(id_fund, save_to_file = False):
     
     Returns:
         MSFund: a MSFund instance with all the data filled
-    """
-    logger.info(f'Scrapping fund: {id_fund}')        
-    url = f'https://www.morningstar.es/es/funds/snapshot/snapshot.aspx?id={id_fund}'
+    """    
+    logger.info(f'Scrapping {universe.name.lower()}: {id}')        
+    url = f'https://www.morningstar.es/es/{universe.name.lower()}s/snapshot/snapshot.aspx?id={id}'
     fund = MSFund()
-    fund.MSID = id_fund
+    fund.MSID = id
     
-    general_page = get_page_from_url(url, id_fund, wait_locator = (By.ID, 'overviewQuickstatsBenchmarkDiv'), save_to_file=save_to_file)
+    general_page = get_page_from_url(url, id, wait_locator = (By.ID, 'overviewQuickstatsBenchmarkDiv'), save_to_file=save_to_file)
     if general_page != None:
         parse_general(general_page, fund)      
-        parse_rating_risk(get_page_from_url(url, id_fund, 2,  wait_locator = (By.ID, 'ratingRiskRightDiv'), save_to_file=save_to_file), fund)
+        parse_rating_risk(get_page_from_url(url, id, 2,  wait_locator = (By.ID, 'ratingRiskRightDiv'), save_to_file=save_to_file), fund)
     
     return fund
 
-def get_funds(list_id, output, save_files):
+def get_funds(list_id, universe, output, save_files):
     """Retrieve the current funds info for the provided list of ms ids and stores as csv into
     the provided output file path.
-    NOTE: if there is a file with the 
-
     Args:
-        list_id ([str]): List of ms funds to retrieve info from.
+        list_id (str): List of ms funds to retrieve info from.
         output (file path): A well formed file path
+        save_files (boolean): True if the html files have to be download
     """    
     logger.info(f"Num of funds to retrieve: {len(list_id)}")
     logger.debug(list_id)
@@ -137,19 +137,18 @@ def get_funds(list_id, output, save_files):
             dummy_fund = MSFund()
             wr.writerow(dummy_fund.get_properties_names())
             for id in list_id:
-                fund = parse_fund(id, save_files)
+                fund = parse_fund(id, universe, save_files)
                 wr.writerow(fund.get_properties())
         except Exception:
             logger.error("Error retrieving funds",  exc_info=True)
 
 
 if __name__ == '__main__':
-    with open('test_pages/0P000019YS_general.html', 'r') as f:
+    with open('test_pages/0P0001IKIZ_general.html', 'r') as f:
         contents = f.read()
     
     soup = BeautifulSoup(contents, "html.parser")
     fund = MSFund()
-    fund.MSID = '0P000019YS'
-    parse_general(soup, fund)
-    #parse_fund("F0GBR04BG3")
+    fund.MSID = '0P0001IKIZ'
+    parse_general(soup, fund)    
 

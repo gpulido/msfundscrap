@@ -143,6 +143,10 @@ def rating_from_class(rating_class):
     return None
 
 
+class MSUniverses(Enum):
+    FUND = 0
+    ETF = 1
+
 @dataclass
 class MSFundFilter:
     """Class model the filterSelectedValue 
@@ -156,7 +160,8 @@ class MSFundFilter:
     starRating: Levels = Levels.NONE
     sustainabilityRating: Levels = Levels.NONE    
     fundSize: FundSize = FundSize.NONE       
-    yieldPercent: YieldPercent = YieldPercent.NONE    
+    yieldPercent: YieldPercent = YieldPercent.NONE 
+    universe: MSUniverses = MSUniverses.FUND   
     #TODO: There are more filters that can be applyied but those are the more common.
 
 

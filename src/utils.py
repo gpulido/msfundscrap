@@ -34,7 +34,11 @@ def number_from_class(number_class):
     Returns:
         int: the number representation of the class.
     """
-    return int(number_class[-1])
+    try:
+        n = int(number_class[-1])
+    except ValueError:
+        n = 0
+    return n
 
 
 def parse_table(table, header_class, value_class):    

@@ -1,6 +1,6 @@
 import argparse
 from model import *
-from funds_filter import *
+from ms_filter import *
 from fund_scrapper import *
 from datetime import date
 import itertools
@@ -28,7 +28,7 @@ def list_ids(args):
         args (str): A list of ms id's separated by commas
     """
     funds = args.list.split(',')    
-    get_funds(funds, args.output, args.savefiles)     
+    get_funds(funds, MSUniverses[args.universe.upper()], args.output, args.savefiles)     
 
 def file_ids(args):
     """Use the provided list of ids to retrieve funds
@@ -41,7 +41,7 @@ def file_ids(args):
     funds = set(itertools.chain.from_iterable(lines))
     if '' in funds:
         funds.remove('')
-    get_funds(funds, args.output, args.savefiles)    
+    get_funds(funds, MSUniverses[args.universe.upper()], args.output, args.savefiles)    
 
 def filter(args):
     """Use the provided filter args from the command line to generate the list of funds to
@@ -58,15 +58,15 @@ def filter(args):
         newFilter.quantitativeRating = QuaRatings[args.rating.upper()]
     if args.sustainability:
         newFilter.sustainabilityRating = Levels(args.sustainability)
-    
-    num, funds = get_funds_list_api(newFilter, 1, args.max)
+    newFilter.universe = MSUniverses[args.universe.upper()]    
+    num, funds = get_ids_by_filter(newFilter, 1, args.max)
     funds_ids = [f['SecId'] for f in funds] 
     if args.saveidsfile:
          with open(args.saveidsfile, 'w', newline='') as ids_file:
              ids_file.write(','.join(funds_ids))
 
 
-    get_funds(funds_ids, args.output, args.savefiles)    
+    get_funds(funds_ids, MSUniverses[args.universe.upper()], args.output, args.savefiles)    
 
 if __name__ == '__main__':    
     
@@ -74,8 +74,9 @@ if __name__ == '__main__':
     parser.set_defaults(func=lambda args: parser.print_help())
     #TODO: validate output as path
     parser.add_argument('--output', type=str, default=f'data_{date.today()}.csv', help="output file to serialize to serialize the funds info")
-    parser.add_argument('--loglevel', default='DEBUG', choices=['INFO', 'DEBUG'],  required=False, help="Logging level.", type=str)
+    parser.add_argument("--universe", type=str, choices=["fund", "etf"], default="fund", help="type of ms universe to retrieve")    
     parser.add_argument('--savefiles', type=bool, default=False,  help="True if the html files should be stored")
+    parser.add_argument('--loglevel', default='DEBUG', choices=['INFO', 'DEBUG'],  required=False, help="Logging level.", type=str)
     ids_parser = parser.add_subparsers(help="Specify how to obtain the ids")
     
     parser_list = ids_parser.add_parser("list", help="Specify list of ids")
