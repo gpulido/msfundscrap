@@ -220,11 +220,21 @@ class MSFund:
     name: str = None
     stars: int = 1 # change to range from 1-5
     vl: float = 0.0
-    category: str  = None #to be reviewed
-    common_expenses: int = 0
-    sustainability: int = 1#change to range from 1-5
+    date_vl: str = None
+    daily_change: str = None
+    category: str  = None 
+    heritage: str = None
+    date_heritage: str = None
+    heritage_class: str = None 
+    date_heritage_class: str = None 
+    comission_max: str = None
+    common_expenses: str = None
+    date_common_expenses: str = None
+    sustainability: int = 1 #change to range from 1-5
+    volatility:  float = 0.0
+    rentabilidad:  float = 0.0
     sharpe: float = 0.0
-    rating: str = None
+    rating: int = 1 # change to range from 1-5
     
 
     def get_properties_names(self):
