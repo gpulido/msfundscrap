@@ -204,7 +204,7 @@ class MSFundFilter:
             rep.append('SustainabilityRank:' + self.sustainabilityRating.as_api())
         
         if self.quantitativeRating != QuaRatings.NONE:
-            rep.append('AnalystRatingScale;' + self.quantitativeRating.as_api())
+            rep.append('AnalystRatingScale:' + self.quantitativeRating.as_api())
 
         return '|'.join(rep)
 
@@ -216,7 +216,7 @@ class MSFund:
     define several output formats
     """    
     MSID: str = None #the id for morning star
-    ISIN: str = None # check format
+    ISIN: str = None #the fund isin
     name: str = None
     rating: int = 1 # change to range from 1-5
     quarating: str = None 

@@ -7,6 +7,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 import requests
 
+
+
 def get_sel_options():
     """Creates a selenium options pre-configured
 
@@ -19,31 +21,45 @@ def get_sel_options():
     return options
 
 
+def get_page(url, locator = None):
+    """Retrieves the html of the given url
+    It decides if use selenium or request
+
+    Args:
+        url (str): a well formed url to retrieve
+        locator (Selenium locator, optional): Locator to wait. Defaults to None.
+
+    Returns:
+        str: The html source for the url
+    """
+    if locator != None:
+        return get_page_selenium(url, locator)
+    else:
+        return get_page_requests(url)
+
 def get_page_selenium(url, locator = None):
     """Uses selenium to retrieve the html code of a given url
 
     Args:
         url (urlstring): a well formed url 
-        wait_for_element (string, optional): If given selenium will 
+        locator (string, optional): If given selenium will 
         wait until the element appears on the page. Defaults to None.
 
     Returns:
         str: html source text for the provided url
-    """
+    """    
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=get_sel_options())
     driver.get(url)
-    
-    #yield driver.page_source
-    #TODO: review if we can use yield and reuse the driver passing a collection
+        
     try:        
         if locator:        
-            element = WebDriverWait(driver, 10).until(
+            element = WebDriverWait(driver, 5, poll_frequency=0.2).until(
                 EC.presence_of_element_located(locator)
             )
     except:
         return None
     finally:               
-        html_source = driver.page_source                  
+        html_source = driver.page_source           
         driver.quit()
 
     return html_source

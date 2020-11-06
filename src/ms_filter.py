@@ -32,7 +32,7 @@ def get_ids_by_filter(fund_filter, page_number = 1, page_size = 100000):
               'languageId':'es-ES',
               'currencyId':'EUR',
               'universeIds':ms_universes[fund_filter.universe],
-              'securityDataPoints':'SecId|Isin',
+              'securityDataPoints': 'SecId|Isin',              
     }
     if fund_filter != None:
         params['filters'] = fund_filter.to_api_filter()
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     test.sustainabilityRating = Levels.FOUR
     test.quantitativeRating = QuaRatings.SILVER
     print(test)
-    get_ids_by_filter(test, 1, 100000)
+    get_ids_by_filter(test, 1, 10)
 
 
     
