@@ -151,9 +151,10 @@ def parse_fund(id, universe = MSUniverses.FUND, save_to_file = False):
     if print_page != None:
         parse_general(print_page, fund)              
         parse_rating_risk(print_page, fund)
-        #sustainability is not in print page    
+        #sustainability is not in print page            
         sustainability_page = get_page_from_url(id, universe.name.lower(), tab=6, wait_locator = (By.CLASS_NAME, 'sal-sustainability__score'), save_to_file=save_to_file)    
-        parse_sustainability(sustainability_page, fund)    
+        if sustainability_page != None:
+            parse_sustainability(sustainability_page, fund)    
     
     return fund
 
