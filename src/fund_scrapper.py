@@ -37,9 +37,8 @@ def parse_general(soup_page, fund):
     count = 1
     for key, k_value in values.items():
         
-        if count == 1:
-            key_plit = key.split("VL")
-            fund.date_vl = key_plit[1]   
+        if count == 1:            
+            fund.date_vl = key[2:]
             fund.vl = k_value
         elif count == 2:
             fund.daily_change = sanitize_text(k_value)   
@@ -47,7 +46,7 @@ def parse_general(soup_page, fund):
             fund.category = k_value
         elif count == 5:
             key_plit = key.split("Patrimonio (Mil)")
-            fund.date_heritage = key_plit[1]         
+            fund.date_heritage = sanitize_text(key_plit[1])
             fund.heritage = k_value 
         elif count == 6:
             key_plit = key.split("Patrimonio Clase (Mil)")
@@ -57,7 +56,7 @@ def parse_general(soup_page, fund):
             fund.comission_max = sanitize_text(k_value)  
         elif count == 8:
             key_plit = key.split("Gastos Corrientes")
-            fund.date_common_expenses = key_plit[1]   
+            fund.date_common_expenses = sanitize_text(key_plit[1])
             fund.common_expenses = k_value 
             
         count = count + 1
@@ -181,7 +180,7 @@ def get_funds(list_id, universe, output, save_files):
             wr.writerow(dummy_fund.get_properties_names())
             for id in list_id:
                 count += 1
-                logger.info(f"Scrapin fund {count}/{num_funds}")
+                logger.info(f"Scrapping fund {count}/{num_funds}")
                 fund = parse_fund(id, universe, save_files)
                 wr.writerow(fund.get_properties())                
         except Exception:
@@ -195,5 +194,6 @@ if __name__ == '__main__':
     soup = BeautifulSoup(contents, "html.parser")
     fund = MSFund()
     fund.MSID = 'F0GBR04I8O'
-    parse_general(soup, fund)    
+    parse_general(soup, fund)
+    print(fund)
 
