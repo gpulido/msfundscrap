@@ -18,7 +18,7 @@ def parse_general(soup_page, fund):
     if soup_page == None:
         return
     title = soup_page.title.string.split('|')[0]
-    fund.name = sanitize_text(title)    
+    fund.name = sanitize_text(title)  
     
     rating_span = soup_page.findAll("span", {"class": "rating_sprite"})
     if len(rating_span) > 0:
@@ -26,24 +26,51 @@ def parse_general(soup_page, fund):
         stars = rating_span[0].attrs['class'][1]
         fund.stars =  number_from_class(stars)
         #rating
-        if len(rating_span) > 1:
-            rating = rating_span[1].attrs['class'][1]
-            fund.rating = rating_from_class(rating)
+        #if len(rating_span) > 1:
+            #rating = rating_span[1].attrs['class'][1]
+            #fund.rating = rating_from_class(rating)
+        fund.rating = number_from_class(stars)
 
     #search for keystats
     keystats = soup_page.findAll("div", {"id": "overviewQuickstatsDiv"})[0].find('table')
-    keystats_values = parse_table(keystats, "heading", "text") 
-    #TODO: parse keystats values into fund    
+    keystats_values = parse_table(keystats, "heading", "text")  
     fund.ISIN = keystats_values['ISIN']
-
+    
     quickstats = soup_page.findAll("div", {"id": "overviewQuickstatsBenchmarkDiv"})[0].find('table')
     values = parse_table(quickstats, "heading", "text")    
-    #TODO: parse quickstats values into fund   
+    
+    count = 1
+    for key, k_value in values.items():
+        
+        if count == 1:
+            key_plit = key.split("VL")
+            fund.date_vl = key_plit[1]   
+            fund.vl = k_value
+        elif count == 2:
+            fund.daily_change = sanitize_text(k_value)   
+        elif count == 3:
+            fund.category = k_value
+        elif count == 5:
+            key_plit = key.split("Patrimonio (Mil)")
+            fund.date_heritage = key_plit[1]         
+            fund.heritage = k_value 
+        elif count == 6:
+            key_plit = key.split("Patrimonio Clase (Mil)")
+            fund.date_heritage_class = key_plit[1]   
+            fund.heritage_class = k_value
+        elif count == 7:
+            fund.comission_max = sanitize_text(k_value)  
+        elif count == 8:
+            key_plit = key.split("Gastos Corrientes")
+            fund.date_common_expenses = key_plit[1]   
+            fund.common_expenses = k_value 
+            
+        count = count + 1
+        
     #Sustainability
     sust_div = soup_page.findAll("div", {"class": "sal-sustainability__score"})
     sust = number_from_class(sust_div[1].attrs['class'][1])
     fund.sustainability  = sust
-   
     
 def parse_rating_risk(soup_page, fund):
     """ Parse the rating risk page from ms
@@ -54,11 +81,30 @@ def parse_rating_risk(soup_page, fund):
     """
     if soup_page == None:
         return
+    
     left_table = soup_page.findAll("div", {"id": "ratingRiskLeftDiv"})[0].find('table')
     left = parse_table(left_table, "label", "value")
+
+    volatilidad = left['Volatilidad']        
+    if volatilidad == "-":  
+        fund.volatility = 0.0
+    else:
+        v_split = volatilidad.split(" ")
+        fund.volatility = read_float_with_comma(v_split[0])
+
+    rentabilidad = left['Rentabilidad media 3a']
+    if rentabilidad == "-":  
+        fund.rentabilidad = 0.0
+    else:
+        r_split = rentabilidad.split(" ")
+        fund.rentabilidad = read_float_with_comma(r_split[0])
+    
     right_table = soup_page.findAll("div", {"id": "ratingRiskRightDiv"})[0].find('table')
-    right = parse_table(right_table, "label", "value")
-    fund.sharpe = read_float_with_comma(right['Ratio de Sharpe'])    
+    right = parse_table(right_table, "label", "value")  
+    if right['Ratio de Sharpe'] != "-":
+        fund.sharpe = read_float_with_comma(right['Ratio de Sharpe'])    
+    else:
+        fund.sharpe = 0.0
 
 
 def get_page_from_url(url, id_fund, tab = None, wait_locator = None, save_to_file = False):
@@ -105,8 +151,10 @@ def parse_fund(id, universe = MSUniverses.FUND, save_to_file = False):
     Returns:
         MSFund: a MSFund instance with all the data filled
     """    
-    logger.info(f'Scrapping {universe.name.lower()}: {id}')        
-    url = f'https://www.morningstar.es/es/{universe.name.lower()}s/snapshot/snapshot.aspx?id={id}'
+    #logger.info(f'Scrapping {universe.name.lower()}: {id}')        
+    logger.info(f'Scrapping : {id}')    
+    #url = f'https://www.morningstar.es/es/{universe.name.lower()}s/snapshot/snapshot.aspx?id={id}'
+    url = f'https://www.morningstar.es/es/{universe}s/snapshot/snapshot.aspx?id={id}'
     fund = MSFund()
     fund.MSID = id
     
@@ -149,6 +197,6 @@ if __name__ == '__main__':
     
     soup = BeautifulSoup(contents, "html.parser")
     fund = MSFund()
-    fund.MSID = '0P0001IKIZ'
+    fund.MSID = '0P000019YS'
     parse_general(soup, fund)    
 
