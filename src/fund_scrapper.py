@@ -80,26 +80,14 @@ def parse_rating_risk(soup_page, fund):
     left_table = soup_page.findAll("div", {"id": "ratingRiskLeftDiv"})[0].find('table')
     left = parse_table(left_table, "label", "value")
 
-    volatilidad = left['Volatilidad']        
-    if volatilidad == "-":  
-        fund.volatility = 0.0
-    else:
-        v_split = volatilidad.split(" ")
-        fund.volatility = read_float_with_comma(v_split[0])
+    fund.volatility = get_float_from_dict(left, 'Volatilidad', True)
+    fund.rentabilidad = get_float_from_dict(left, 'Rentabilidad media 3a', True)  
 
-    rentabilidad = left['Rentabilidad media 3a']
-    if rentabilidad == "-":  
-        fund.rentabilidad = 0.0
-    else:
-        r_split = rentabilidad.split(" ")
-        fund.rentabilidad = read_float_with_comma(r_split[0])
-    
     right_table = soup_page.findAll("div", {"id": "ratingRiskRightDiv"})[0].find('table')
-    right = parse_table(right_table, "label", "value")  
-    if right['Ratio de Sharpe'] != "-":
-        fund.sharpe = read_float_with_comma(right['Ratio de Sharpe'])    
-    else:
-        fund.sharpe = 0.0
+    right = parse_table(right_table, "label", "value")
+    
+    fund.sharpe = get_float_from_dict(right, 'Ratio de Sharpe')
+    
 
 
 def get_page_from_url(url, id_fund, tab = None, wait_locator = None, save_to_file = False):

@@ -69,3 +69,13 @@ def parse_table(table, header_class, value_class):
             values[name] = value
     return values
 
+def get_float_from_dict(dic, key, remove_perc = False):
+
+    if key in dic:
+        value = dic[key]        
+        if value != "-":  
+            if remove_perc:            
+                v_split = value.split(" ")
+                return v_split[0]
+            return value
+    return 0.0

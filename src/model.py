@@ -231,8 +231,7 @@ class MSFund:
     date_heritage_class: str = None 
     comission_max: str = None
     common_expenses: str = None
-    date_common_expenses: str = None
-    
+    date_common_expenses: str = None    
     volatility:  float = 0.0
     rentabilidad:  float = 0.0
     sharpe: float = 0.0
