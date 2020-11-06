@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from model import MSFund, MSUniverses
+from model import MSFund, MSUniverses, quarating_from_class
 from utils import *
 from scrapper_motor import *
 from selenium.webdriver.common.by import By
@@ -22,14 +22,13 @@ def parse_general(soup_page, fund):
     
     rating_span = soup_page.findAll("span", {"class": "rating_sprite"})
     if len(rating_span) > 0:
-        #stars
-        stars = rating_span[0].attrs['class'][1]
-        fund.stars =  number_from_class(stars)
         #rating
+        rating = rating_span[0].attrs['class'][1]
+        fund.rating =  number_from_class(rating)
+        #Quantitative rating
         if len(rating_span) > 1:
-            rating = rating_span[1].attrs['class'][1]
-            fund.rating = rating_from_class(rating)
-        #fund.rating = number_from_class(stars)
+            quarating = rating_span[1].attrs['class'][1]
+            fund.quarating = quarating_from_class(quarating)        
 
       
     quickstats = soup_page.findAll("div", {"id": "overviewQuickstatsBenchmarkDiv"})[0].find('table')

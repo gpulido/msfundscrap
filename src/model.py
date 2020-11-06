@@ -124,7 +124,7 @@ class YieldPercent(Enum):
              return ":GT:8"
         return str(self.value)
     
-def rating_from_class(rating_class):
+def quarating_from_class(rating_class):
     number = int(rating_class[-1])
     if number == 1:
         return "Negative"
@@ -218,7 +218,9 @@ class MSFund:
     MSID: str = None #the id for morning star
     ISIN: str = None # check format
     name: str = None
-    stars: int = 1 # change to range from 1-5
+    rating: int = 1 # change to range from 1-5
+    quarating: str = None 
+    sustainability: int = 1 #change to range from 1-5  
     vl: float = 0.0
     date_vl: str = None
     daily_change: str = None
@@ -230,11 +232,11 @@ class MSFund:
     comission_max: str = None
     common_expenses: str = None
     date_common_expenses: str = None
-    sustainability: int = 1 #change to range from 1-5
+    
     volatility:  float = 0.0
     rentabilidad:  float = 0.0
     sharpe: float = 0.0
-    rating: int = 1 # change to range from 1-5
+    
     
 
     def get_properties_names(self):
