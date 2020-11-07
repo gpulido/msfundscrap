@@ -48,19 +48,21 @@ def get_page_selenium(url, locator = None):
     Returns:
         str: html source text for the provided url
     """    
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=get_sel_options())
-    driver.get(url)
-        
-    try:        
+    html_source = None
+    try:          
+        driver = webdriver.Chrome(ChromeDriverManager().install(), options=get_sel_options())
+        driver.get(url)
+              
         if locator:        
             element = WebDriverWait(driver, 5, poll_frequency=0.2).until(
                 EC.presence_of_element_located(locator)
             )
     except:
         return None
-    finally:               
-        html_source = driver.page_source           
-        driver.quit()
+    finally:
+        if driver:               
+            html_source = driver.page_source           
+            driver.quit()
 
     return html_source
 
