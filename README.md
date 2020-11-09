@@ -1,5 +1,4 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 # msfundscrap
 Web scrapping of Funds information from MorningStart (https://www.morningstar.es/es/).
 
