@@ -68,7 +68,7 @@ The filter categories currently supported are:
 
 - MS Rating - use the `--rating` parameter (acepted values are "negative", "neutral", "bronze","silver", "gold")
 - MS Stars - use the `--star` parameter (from 1 to 5)
-- Qualitative - use the `--qualitative` parameter (from 1 to 5)
+- Sustainability - use the `--sustainability` parameter (from 1 to 5)
 
 The parameters acts as a minimun value that should have, hence a --star 3 will retrieve funds with 3, 4 and 5 stars.
 Several parameters can be combined, they behave as an `AND`
