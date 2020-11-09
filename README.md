@@ -9,7 +9,7 @@ Tipología y ciclo de vida de los datos (Data Sciencie Master - UOC)
 - Gabriel Pulido de Torres
 
 ## contents
-The folder `pdf` contains the document **resolution of the practice** at [`pdf/documentoPractica1.pdf`](pdf/documentoPractica1.pdf)
+The folder `pdf` contains the document **resolution of the asigment** at [`pdf/documentoPractica1.pdf`](pdf/documentoPractica1.pdf)
 
 The folder `src` contains Python source code for the scrapper.
 - `src/ms_scrapper.py` - main entry point
@@ -21,7 +21,7 @@ The folder `src` contains Python source code for the scrapper.
 
 (check the src [README](src/README.md) for detail instructions of usage.)
 
-The folder `test_pages` contains some morning star pre-downloaded funds files so they can be used to test the retrieval of data to avoid hitting the ms web more than necesary
+The folder `test_pages` contains some morning star pre-downloaded funds files so they can be used to test the parsing of data to avoid hitting the ms web more than necesary.
 
 
 ## dataset
