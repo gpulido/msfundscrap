@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # msfundscrap
 Web scrapping of Funds information from MorningStart (https://www.morningstar.es/es/).
 
@@ -23,6 +25,6 @@ The folder `src` contains Python source code for the scrapper.
 
 
 ## dataset
-DOI 10.5281/zenodo.4263256
+DOI 10.5281/zenodo.4263256 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 URL https://doi.org/10.5281/zenodo.4263256
