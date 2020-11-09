@@ -2,8 +2,8 @@
 Web scrapping of Funds information from morningstart as part of a Data Scientist Master Exercise
 
 ## members
-Gabriel Pulido de Torres
-Alexis Germán Arroyo Peña
+- Gabriel Pulido de Torres
+- Alexis Germán Arroyo Peña
 
 ## contents
 
@@ -17,4 +17,5 @@ Alexis Germán Arroyo Peña
 
 ## dataset
 DOI 10.5281/zenodo.4263256
+
 URL https://doi.org/10.5281/zenodo.4263256
