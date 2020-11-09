@@ -60,7 +60,7 @@ Duplicates are removed
 example:
 
 ```
-python ms_scrapper.py filter --rating silver --star 4 --qualitative 3
+python ms_scrapper.py filter --rating silver --star 4 --sustainability 3
 ```
 
 A list of ids can be automatically obtained from ms using the filtering capabilities.
