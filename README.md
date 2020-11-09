@@ -22,7 +22,6 @@ The folder `src` contains Python source code for the scrapper.
 (check the src [README](src/README.md) for detail instructions of usage.)
 
 
-
 ## dataset
 DOI 10.5281/zenodo.4263256 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
