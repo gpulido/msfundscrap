@@ -1,5 +1,7 @@
 # msfundscrap
-Web scrapping of Funds information from morningstart as part of a Data Scientist Master Exercise
+Web scrapping of Funds information from MorningStart (https://www.morningstar.es/es/).
+
+Tipología y ciclo de vida de los datos (Data Sciencie Master - UOC)
 
 ## members
 - Gabriel Pulido de Torres
